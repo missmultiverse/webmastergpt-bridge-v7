@@ -1,0 +1,73 @@
+🛑 Known Issue: "Invalid file path" on File Creation via REST API
+Summary
+Attempts to create new files (not just edit existing ones) with the WebMasterGPT Bridge REST API consistently failed with:
+
+css
+Copy
+Edit
+{"code":"invalid_path","message":"Invalid file path.","data":{"status":403}}
+even when the folder and permissions were correct.
+
+Root Cause
+The function responsible for safe editing/writing (wgpt_safe_edit_file() in includes/selfedit.php) originally used this logic:
+
+php
+Copy
+Edit
+$target_file = realpath($plugin_base . '/' . $relative_path);
+if (!$target_file || strpos($target_file, $plugin_base) !== 0) {
+    return new WP_Error('invalid_path', 'Invalid file path.', ['status' => 403]);
+}
+Problem:
+realpath() returns false if the target file does not exist yet.
+
+This blocked all new file creations, not just edits, by always returning "invalid_path."
+
+Diagnosis Process
+Verified route and permission logic were correct (ping endpoint, API key, and POST/REST endpoint tested and working).
+
+Attempted file creation in various folders using both API tools and direct cURL.
+
+Read the code in selfedit.php and confirmed the above logic flaw.
+
+Consulted existing KNOWN_ISSUES and best-practices docs, confirming this was not previously documented.
+
+Solution
+Replaced the broken file path logic with this pattern:
+
+php
+Copy
+Edit
+$target_file = $plugin_base . '/' . ltrim($relative_path, '/\\');
+$target_real = realpath(dirname($target_file));
+if (!$target_real || strpos($target_real, $plugin_base) !== 0) {
+    return new WP_Error('invalid_path', 'Invalid file path.', ['status' => 403]);
+}
+This allows new files to be created as long as their parent directory exists and is inside the plugin root.
+
+Preserves protection against directory traversal and writing outside the plugin.
+
+Verification
+Re-tested with cURL and the REST API:
+
+File creation at root: ✅ Success
+
+File creation in subfolder: ✅ Success
+
+Confirmed in plugin folder on server.
+
+Permanent Fix
+Update and verify all usages of wgpt_safe_edit_file() to use the new logic.
+Add a test to KNOWN_ISSUES regression checklist:
+"Test creating new file in plugin and subfolder using REST/API after changes to safe edit logic."
+
+References
+[WebMaster.GPT Chat Logs – June 2025]
+
+[selfedit.php – Function: wgpt_safe_edit_file()]
+
+[KNOWN_ISSUES/WebmasterGPT Bridge v6.0+ — Known Errors & Fixes]
+
+Documented by: WebMaster.GPT
+Date: 2025-06-16
+

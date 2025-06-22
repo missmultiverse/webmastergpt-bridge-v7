@@ -1,0 +1,105 @@
+📄 Plugin Fix & Known Issues Documentation
+
+
+WebmasterGPT Bridge — REST API Security & Integration Issues
+Documented Fixes & Lessons Learned for Future Plugin Development
+
+Issue 1: Fatal Error — “Cannot redeclare function”
+
+Symptom:
+
+PHP Fatal error: Cannot redeclare gpt_api_permission_check() (previously declared in …)
+
+Root Cause:
+
+Defining the same function (gpt_api_permission_check or similar) in more than one file (e.g., both in helpers.php and again in rest-endpoints.php).
+
+PHP does not allow duplicate function declarations in the same runtime.
+
+Resolution & Best Practice:
+
+Define each utility/shared function only once, preferably in a dedicated file (e.g. helpers.php).
+
+Require/include that file wherever the function is needed, instead of copying the code.
+
+Never declare the same function in multiple files.
+
+If using OOP, always use autoloading or explicit includes.
+
+Issue 2: REST API Permission Callback Returns 401
+Symptom:
+
+{ "code": "rest_forbidden", "message": "Sorry, you are not allowed to do that.", "data": { "status": 401 } }
+
+Root Cause:
+
+Permission callback returned false because the API key expected in code didn’t match the key sent in the request header.
+
+Common causes:
+
+The key in wp-config.php was missing or mistyped.
+
+The key was not set in the WordPress options table.
+
+The header in the cURL/Postman request was named incorrectly (should be x-api-key).
+
+Resolution & Best Practice:
+
+Store API keys as define() constants in wp-config.php for security and portability.
+
+Write permission callback functions to check for the constant, with a fallback to get_option() for legacy or alternate support.
+
+Require clients to send the key using the HTTP header x-api-key.
+
+Always validate header name and value in debugging.
+
+If using cURL, verify:
+
+bash
+Copy
+Edit
+-H "x-api-key: <YOUR-KEY>"
+Log or output both the received and expected key if you ever see 401/403 during development.
+
+Issue 3: “Header already sent” and PHP Notices in REST Output
+Symptom:
+
+“Cannot modify header information - headers already sent by…”
+
+Root Cause:
+
+PHP warnings/notices are output before the REST API response, causing broken or noisy JSON and sometimes AJAX errors.
+
+This often comes from other plugins or the theme.
+
+Resolution & Best Practice:
+
+Turn off debug display in production:
+
+php
+Copy
+Edit
+define('WP_DEBUG', false);
+define('WP_DEBUG_DISPLAY', false);
+@ini_set('display_errors', 0);
+Fix or suppress all PHP warnings/notices in custom plugin code.
+
+If third-party plugin is noisy, set debug display to false temporarily during API response.
+
+General Lessons & Recommendations
+Centralize all reusable logic (permission checks, validators) in helper/include files.
+
+Never redeclare the same function in multiple plugin files.
+
+Use configuration constants for secrets/keys.
+
+Always sanitize and validate REST input parameters.
+
+Test endpoints with cURL and Postman, checking for JSON validity and header correctness.
+
+Document all fixes and edge cases for your plugin, so the next developer avoids past pitfalls!
+
+Short Copy for Git Commits/Changelogs
+[FIX] Resolved REST API fatal errors by centralizing permission functions in helpers.php, using config constants for API keys, and cleaning up route registrations. Added debug logging for future troubleshooting. See readme for full process.
+[2025-06-15]
+

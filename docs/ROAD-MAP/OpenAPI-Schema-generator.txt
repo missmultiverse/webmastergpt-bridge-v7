@@ -1,0 +1,154 @@
+
+WebmasterGPT Bridge V6 – OpenAPI Schema & Development Roadmap
+Status update: June 2025
+Maintainer: MissMultiverse.AI / Linda
+
+Summary
+WebmasterGPT Bridge is now at v6, with a growing set of REST endpoints (for plugin deployment, site introspection, file editing, action approvals, and more), managed via modular includes.
+A robust, well-documented OpenAPI schema is key for GPT interoperability and multi-site universality.
+
+Key Design Decisions
+OpenAPI schema is the contract between all GPT agents and the plugin.
+
+The schema is kept in sync both in YAML (for CustomGPT and docs) and as a PHP array in the codebase.
+
+REST endpoints are modular; every time an endpoint changes, the schema must be updated.
+
+Standard Operating Procedure (SOP): Updating the OpenAPI Schema
+Define or Update Endpoints
+
+When you add, remove, or change a REST endpoint (in /includes/rest-endpoints.php), update the YAML spec first.
+
+Sync Schema to PHP
+
+Mirror the YAML paths into the $paths array in wgpt_generate_openapi_schema() in /includes/openapi-generator.php.
+
+Make sure requestBody, parameters, and response schema all match.
+
+For clarity and testing, include all properties exactly as described in the CustomGPT YAML version.
+
+Register the Schema Endpoint
+
+Expose the OpenAPI schema via /webmastergpt/v1/openapi-schema using a REST route.
+
+Endpoint callback should return the decoded JSON schema from wgpt_generate_openapi_schema().
+
+Admin UI: Schema Viewer
+
+Tools tab has a “Show OpenAPI Schema” button, which uses JS to load the schema into a textarea for review/copy.
+
+Testing and Validation
+
+Test all endpoints using cURL, Postman, or CustomGPT test commands.
+
+Use the admin UI to visually inspect the current OpenAPI schema.
+
+If CustomGPT or any AI agent has issues, first verify the schema for mismatches or missing fields.
+
+Documentation
+
+Store the latest YAML spec in /docs/ or in a dev-notes file for future reference.
+
+Keep a changelog of endpoint changes and schema syncs.
+
+Future Enhancements
+Universal/Multi-site:
+Move toward a system where one GPT/CustomGPT agent can manage multiple websites, leveraging the unified schema as a contract.
+
+Automated Schema Generation:
+(Stretch goal) Script or CLI that scans registered routes and outputs a basic schema as a starting point for manual review.
+
+Versioning:
+Always increment both plugin and schema version numbers with breaking changes.
+Consider openapi: 3.1.0, version: 6.0.0, and match with plugin.
+
+Immediate Next Steps (June 2025)
+Test:
+
+Confirm all endpoints work using cURL and CustomGPT.
+
+Validate the OpenAPI schema loads and matches current working YAML.
+
+Polish:
+
+Update the PHP $paths array in /includes/openapi-generator.php to match the full working YAML schema.
+
+Double-check parameter names, required fields, and responses.
+
+Document:
+
+Save this roadmap, working YAML, and the latest schema as /docs/openapi-roadmap-v6.txt or similar.
+
+Key Locations
+YAML Schema Reference: docs/webmastergpt-openapi-v6.yaml
+
+PHP Schema Generator: includes/openapi-generator.php
+
+REST Endpoints: includes/rest-endpoints.php
+
+Admin UI Tools Tab: includes/tools.php
+
+Golden Rule
+Whenever you change an endpoint, update BOTH the YAML and the PHP schema immediately.
+Test with real GPT commands to ensure nothing breaks in production.
+
+— End of Roadmap —
+
+
+
+
+
+1. Export Your Working YAML Schema
+You already have the YAML (that’s the “gold standard” for your API design).
+
+2. Convert YAML to PHP Array
+You need your YAML schema (all paths, operations, and schemas) represented as a PHP array in wgpt_generate_openapi_schema().
+Options:
+
+Manual: Copy each endpoint from YAML, and re-create the array structure in PHP (as in the sample above).
+
+Automated: Use an online YAML-to-PHP-array converter or script to speed up the process.
+
+3. Update the PHP Schema Generator
+File: /includes/openapi-generator.php (or whatever file is used in your plugin)
+
+Replace the $paths array in wgpt_generate_openapi_schema() with your new, fully detailed endpoints array from step 2.
+
+Double-check for property names, requestBody, parameters, and response schemas—they should match the working YAML.
+
+4. Register/Expose the Schema in a REST Endpoint
+File: /includes/rest-endpoints.php
+
+Ensure there’s a REST route like /webmastergpt/v1/openapi-schema that returns your generated schema.
+
+The callback just runs and returns json_decode(wgpt_generate_openapi_schema(), true) (array).
+
+5. Test the Endpoint
+Go to your Tools tab and click the “Show OpenAPI Schema” button.
+
+The output in the textarea should match your intended schema.
+
+If not, fix array issues, missing fields, or PHP errors.
+
+6. (Optional) Automate Future Updates
+Any time you add a new endpoint, update the $paths array in the schema generator function immediately.
+
+You could (in future) write a small PHP script that inspects all registered REST routes and builds a partial schema, but manual sync is safest for now.
+
+7. (Optional, Advanced)
+You can maintain your “master” API spec in YAML (for documentation and sharing), and keep the PHP array version as the actual server definition.
+
+Consider adding more automation in the future to generate the PHP from YAML (using tools or a small script).
+
+Summary Table: Steps
+Step	What to do
+1. Export YAML	Use your existing working YAML as reference.
+2. Convert to PHP	Translate endpoints into the $paths array for PHP.
+3. Update Generator	Replace function code in openapi-generator.php.
+4. Register Endpoint	Ensure REST endpoint returns the schema from the function.
+5. Test	View schema via plugin UI – ensure it matches YAML.
+6. Sync on Updates	Always add new endpoints to both PHP schema and YAML.
+7. Automate (future)	(Optional) Script or tool for YAML→PHP array generation.
+
+
+

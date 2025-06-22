@@ -1,0 +1,113 @@
+
+
+WebmasterGPT Bridge v6 – REST API Endpoints & Roadmap
+A. Core (Implemented) Endpoints
+Endpoint	Method	Purpose	Status
+/ping	GET	Health check (API online test)	Implemented
+/propose-action	POST	AI proposes actions for human/admin approval	Implemented
+/deploy-plugin	POST	Deploy or update a plugin (can be pending approval)	Implemented
+/ai-edit-file	POST	AI/admin edits files in plugin dir with backup/rollback	Implemented
+/bridge	POST	Internal bridge tasks (log sync, health check, etc)	Implemented
+/webmaster-action	POST	Multi-action endpoint (list plugins/users/stats, edit htaccess)	Implemented (V6)
+/list-plugin-files	POST	List plugin files that can be edited	Implemented
+/edit-file	POST	Edit any editable plugin file	Implemented
+/pending-actions	GET	List all pending admin actions	Implemented
+/approve-action	POST	Approve a pending action (admin only)	Implemented
+/reject-action	POST	Reject/delete a pending action (admin only)	Implemented
+/openapi-schema	GET	Return OpenAPI schema (for GPT/agent onboarding)	Implemented
+
+B. Suggested/Future Endpoints
+Endpoint	Method	Purpose	Status
+/create-post	POST	Create new WordPress post	To Implement
+/get-article-count	GET	Return total # of articles (posts)	To Implement
+/list-directories	GET	List all directories within specified path (e.g., plugins)	To Implement
+/get-plugin-status	GET	Status of all installed plugins	(Covered by /webmaster-action with list_plugins in V6)
+/check-database-health	GET	Database integrity check	To Implement
+/clear-cache	POST	Clear WP/site cache	To Implement
+/get-plugin-errors	GET	Fetch recent plugin error logs	To Implement
+/enable-debugging	POST	Enable WP debug mode	To Implement
+/get-plugin-file-content	POST	Get contents of a plugin file	(Covered by /list-plugin-files + /edit-file in V6)
+/reset-plugin-settings	POST	Reset plugin settings to default	To Implement
+
+C. Notes and Best Practices
+Security:
+Most endpoints require a valid API key (x-api-key) in the header or as a POST parameter, and/or admin capability for critical actions (edit, approve, reset).
+
+Approval Workflow:
+Actions that can alter site state (deploying plugins, editing files) may be routed to pending actions and require explicit admin approval via /approve-action or /reject-action.
+
+Extensibility:
+All endpoints should be easily extensible for custom actions, new modules, and additional health or diagnostic routines.
+
+Self-healing:
+The plugin includes logic for autonomous repair, file rollback, and schema self-description (via /openapi-schema).
+
+D. API Action Map
+Already in V6 (core/merged/multi-action):
+
+/webmaster-action covers:
+
+List plugins (list_plugins)
+
+List users (list_users)
+
+List themes (list_themes)
+
+Site stats (site_stats)
+
+Edit htaccess (edit_htaccess)
+
+(Add more as needed: e.g., list_directories, check_db_health, etc.)
+
+Not yet in V6 (proposed for future):
+
+/create-post, /clear-cache, /enable-debugging, /reset-plugin-settings, etc.
+
+E. Implementation Roadmap
+Complete Documentation:
+
+Add endpoint summaries, parameters, and response examples to docs and OpenAPI schema.
+
+Polish V6 Endpoints:
+
+Ensure all /webmaster-action types are documented and tested.
+
+Expand OpenAPI schema generator to include any new endpoints.
+
+Admin UI Enhancements:
+
+Add “Test” buttons and visual log of last action per endpoint in dashboard.
+
+Inline documentation/tips for each action tab.
+
+Future-Proofing:
+
+Build stubs for proposed endpoints so CustomGPT or future agents can “discover” available actions.
+
+Mark admin-only endpoints clearly in schema/docs.
+
+Testing:
+
+Test all endpoints with cURL, Postman, and GPT/agent commands.
+
+Validate OpenAPI schema in GPT and external OpenAPI tools.
+
+Security Review:
+
+Revisit API key usage and privilege checks.
+
+Add logging for all state-changing endpoints.
+
+Release & Versioning:
+
+Tag this as v6.0 stable when core is complete.
+
+Maintain changelog for future reference and team onboarding.
+
+How to Use This Doc
+Use the table as a quick reference for all implemented and planned endpoints.
+
+Keep the doc in the plugin repo (e.g., ENDPOINTS-ROADMAP.md or DEVELOPER-DOC.txt) for your team and future development.
+
+Add version/date at the top for clarity.
+

@@ -1,0 +1,155 @@
+
+WebmasterGPT Bridge Plugin
+REST API Schema Patterns & Best Practices (v6)
+Purpose of This Doc
+This document outlines the design patterns, conventions, and rationale behind the WebmasterGPT Bridge plugin’s REST API and OpenAPI schema.
+It serves as both a development reference and a change log, supporting onboarding, future updates, and API unification across multiple sites or agents.
+
+Design Philosophy
+Consistency:
+Uniform rules across all endpoints make API consumption, maintenance, and automation easier.
+
+Security:
+All privileged/admin actions require key-based authentication, verified at both schema and code level.
+
+Scalability:
+Patterns are defined for easy expansion, allowing more endpoints, actions, or data types as the system evolves.
+
+OpenAPI First:
+Every endpoint is documented in an OpenAPI (Swagger) schema for transparency and rapid GPT/AI integration.
+
+Endpoint Patterns & Schema Rules
+1. GET Endpoints
+No requestBody:
+GET requests never define a request body.
+All inputs must be sent via query parameters.
+
+Example:
+
+yaml
+Copy
+Edit
+/wp-json/webmastergpt/v1/pending-actions:
+  get:
+    operationId: getPendingActions
+    summary: List pending actions (admin)
+    parameters:
+      - in: query
+        name: key
+        schema:
+          type: string
+        required: true
+        description: Admin API key
+    responses:
+      "200":
+        description: List of pending actions
+2. POST Endpoints
+requestBody Required:
+All POST endpoints require a JSON request body, describing all fields and their types.
+
+Use for: Create, update, approve, reject, or perform commands/actions.
+
+Example:
+
+yaml
+Copy
+Edit
+/wp-json/webmastergpt/v1/deploy-plugin:
+  post:
+    operationId: deployPlugin
+    summary: Deploy or update a plugin
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - plugin_slug
+              - plugin_code
+              - key
+            properties:
+              plugin_slug:
+                type: string
+              plugin_code:
+                type: string
+              key:
+                type: string
+              activate:
+                type: boolean
+    responses:
+      "200":
+        description: Deployment result
+3. Admin-Only Actions
+Security by API Key:
+Actions like approving/rejecting, editing core files, etc., must include an admin API key.
+
+Enforcement:
+
+The schema must document the key field as required.
+
+Plugin code must verify this key for these endpoints.
+
+Example:
+
+yaml
+Copy
+Edit
+/wp-json/webmastergpt/v1/approve-action:
+  post:
+    operationId: approveAction
+    summary: Approve a pending action
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - id
+              - key
+            properties:
+              id:
+                type: string
+              key:
+                type: string
+    responses:
+      "200":
+        description: Approval result
+Known Issues & Fixes
+GET requests with body:
+Removed all requestBody definitions from GET operations to ensure compatibility and follow REST standards.
+
+Admin API key enforcement:
+All privileged endpoints require and validate the API key; schema and code must be kept in sync.
+
+OpenAPI Schema Loader:
+If using AJAX/OpenAPI viewer, ensure endpoint permission allows viewing for authorized users, and the schema function is loaded before endpoint registration.
+
+Forward-Looking Notes
+Adding new endpoints:
+Follow these rules for method, security, and schema consistency.
+
+Unified schema:
+Keep the OpenAPI definition up to date for all sites using the plugin. Sync changes across sites as the plugin evolves.
+
+Multi-agent/multi-site support:
+These patterns allow a single GPT agent (or many) to manage multiple sites with minimal reconfiguration.
+
+References
+REST API Handbook – WordPress 
+https://developer.wordpress.org/rest-api/
+
+OpenAPI (Swagger) Specification 
+https://swagger.io/specification/
+
+Security: API Keys in WordPress REST API 
+https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-custom-endpoints/
+
+Change Log Example
+Date	Version	Change Summary
+2025-06-15	6.0.0	OpenAPI schema and endpoint patterns finalized
+2025-06-15	6.0.1	GET body removed, admin key enforced, schema patch
+
+For all future development, consult and update this document.
+

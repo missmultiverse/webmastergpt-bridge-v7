@@ -1,0 +1,175 @@
+WebmasterGPT Bridge v6.0+ — Known Errors & Fixes
+1️⃣ 401 Unauthorized / “Sorry, you are not allowed to do that.”
+Symptoms:
+
+API requests (including /ping) return
+{ "code": "rest_forbidden", "message": "Sorry, you are not allowed to do that.", "data": { "status": 401 } }
+
+CustomGPTs, Postman, or cURL calls fail except for public or misconfigured endpoints.
+
+Root Causes:
+
+API key not sent, sent with the wrong header, or not matching the key on the server.
+
+Schema or UI does not clarify the custom header name for API key.
+
+Permission callback not linked properly to endpoints.
+
+Server-side: key defined in wrong place (wp-config.php vs plugin option).
+
+Fix:
+
+API requests MUST send the key as a custom header:
+
+makefile
+Copy
+Edit
+x-api-key: [YOUR_KEY]
+(Not as “Authorization”, “Bearer”, or query string.)
+
+OpenAPI Schema Fix:
+
+yaml
+Copy
+Edit
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+security:
+  - ApiKeyAuth: []
+In CustomGPT Actions UI:
+
+Set authentication to “API Key”
+
+Choose “Custom” type, header name: x-api-key
+
+Paste your key in the value box
+
+Plugin-side:
+
+Make sure all REST endpoints use the correct permission callback in registration.
+
+Permission callback in helpers.php should fetch and validate the key against the expected value.
+
+2️⃣ “Cannot redeclare function…” (PHP Fatal error)
+Symptoms:
+
+White screen or 500 error.
+
+Logs show:
+PHP Fatal error: Cannot redeclare gpt_api_permission_check()…
+
+Root Cause:
+
+Same function defined in more than one plugin file (often helpers.php and rest-endpoints.php).
+
+Fix:
+
+Only define each helper function once (e.g. in helpers.php).
+
+Use require_once to load helpers.
+
+Do not copy-paste permission functions into every file.
+
+3️⃣ Header Already Sent / Broken JSON in REST Output
+Symptoms:
+
+REST endpoint returns broken JSON, with PHP warnings/errors at the top.
+
+AJAX calls fail; errors appear in browser console.
+
+Root Cause:
+
+Debugging enabled, PHP warnings or output sent before JSON.
+
+Plugins or themes sending output unexpectedly.
+
+Fix:
+
+Turn off debug output in production:
+
+php
+Copy
+Edit
+define('WP_DEBUG', false);
+define('WP_DEBUG_DISPLAY', false);
+@ini_set('display_errors', 0);
+Fix all warnings in plugin code.
+
+4️⃣ OpenAPI Schema Integration Issues (CustomGPT “missing API key” or “no auth”)
+Symptoms:
+
+Action UI in ChatGPT does not ask for a key, or uses wrong header.
+
+Write endpoints still fail with 401 even when /ping works.
+
+Root Cause:
+
+Schema missing correct securitySchemes or not referenced at top level.
+
+“API Key” auth type not set as “Custom Header: x-api-key” in UI.
+
+Fix:
+
+Add the correct security block to your OpenAPI schema:
+
+yaml
+Copy
+Edit
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+security:
+  - ApiKeyAuth: []
+In ChatGPT Actions UI, always use “Custom Header”, name: x-api-key.
+
+5️⃣ Read/Write Split: /ping works but create/edit fails
+Symptoms:
+
+/ping returns 200 OK
+
+/create-post or /ai-edit-file returns 401
+
+Root Cause:
+
+Permission callback differs between endpoints; admin endpoints may require a different key.
+
+Fix:
+
+Ensure correct permission callback and key for every endpoint.
+
+If using two keys (user/admin), document clearly which endpoints require which.
+
+Summary of Fix in Schema
+Add or verify this section in your OpenAPI YAML (already present in v6.0+ but repeat for clarity):
+
+yaml
+Copy
+Edit
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+security:
+  - ApiKeyAuth: []
+Then, in the ChatGPT Actions “Authentication” settings:
+
+Type: API Key
+
+Auth Type: Custom
+
+Custom Header Name: x-api-key
+
+Paste your key
+
+Result:
+
+All endpoints authenticate securely, CustomGPT and automation tools can call any operation with no 401 errors, and integration is robust for future expansions.

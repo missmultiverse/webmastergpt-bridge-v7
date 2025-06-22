@@ -1,0 +1,53 @@
+How to Add OpenAI API Key Management
+1. Admin UI for API Key Input
+Add a “Settings” tab in your existing admin UI (or just a section at the top/bottom of the Dashboard or Tools tab).
+
+Field: Secure input for the OpenAI API key (masked, stored encrypted in the database).
+
+Save button: Update option and test the key’s validity (maybe do a quick ping to the OpenAI API).
+
+2. Storing the API Key Securely
+Use update_option('wgpt_openai_api_key', $key, true); to store the key in WordPress.
+
+Encrypt the key before storage, or at minimum, restrict access (never display it back in plain text except immediately after saving).
+
+Always require manage_options capability to view/set the key.
+
+3. Using the Key Programmatically
+When the plugin or an endpoint needs to contact OpenAI, pull the key via get_option('wgpt_openai_api_key').
+
+Fail gracefully: If the key is missing or invalid, show a clear admin notice with a “fix now” link.
+
+4. Optional: Multi-Key/Per-Agent Support
+For advanced use: Let admins save multiple keys, assigned to specific CustomGPTs or actions, with labels (“Content Writer”, “Security Bot”, etc.).
+
+Sample UI Section for Settings Tab
+Add this PHP to your admin-ui.php inside the Dashboard/Settings section:
+
+php
+Copy
+Edit
+// Add to the section where you want the OpenAI key setting:
+if (current_user_can('manage_options')) {
+    if (isset($_POST['wgpt_openai_key'])) {
+        check_admin_referer('wgpt_save_openai_key');
+        update_option('wgpt_openai_api_key', sanitize_text_field($_POST['wgpt_openai_key']), true);
+        echo '<div class="notice notice-success"><p>OpenAI API Key updated.</p></div>';
+    }
+    $current_key = get_option('wgpt_openai_api_key', '');
+    echo '<form method="post">';
+    wp_nonce_field('wgpt_save_openai_key');
+    echo '<h2>OpenAI API Key</h2>';
+    echo '<input type="password" style="width:400px;" name="wgpt_openai_key" value="' . esc_attr($current_key) . '" autocomplete="off" />';
+    echo '<button class="button button-primary" type="submit">Save API Key</button>';
+    echo '</form>';
+}
+Enhance as needed (show last 4 chars, allow “test connection”, etc.).
+
+Forward-Looking Ideas
+API Key Vault: Let the plugin sync with secure vaults (e.g., Azure Key Vault, AWS Secrets Manager) for enterprise security.
+
+Centralized API Key Sync: If you go multi-site or SaaS, let users “push” their API key securely to all connected sites from one panel.
+
+Audit Key Use: Log when/how often the key is used for requests (helps with debugging and usage cost tracking).
+
