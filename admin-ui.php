@@ -92,7 +92,7 @@ add_action('wgpt_render_tab_logs', function () {
 // ----------------------------------------------------------------
 function wgpt_render_admin_ui()
 {
-    $active_tab = $_GET['tab'] ?? 'tools';
+    $active_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'tools';
 
     echo '<div class="wrap">';
     echo '<h1>🤖 WebmasterGPT Bridge</h1>';
