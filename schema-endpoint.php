@@ -18,6 +18,9 @@
  * 🚨 DO NOT REMOVE THIS DEVELOPER NOTE FROM ANY FILE.
  */
 
+//To use it paste this at the cutomGPT: https://missosology.com/wp-json/wgpt/v1/schema and use: x-api-key: 0xteEF2YXTpNnnLOZP8SZDyo
+
+
 // ┌──────────────────────────────────────────────────────────────┐
 // │ --- START --- SCHEMA ENDPOINT -------------------------------│
 // └──────────────────────────────────────────────────────────────┘
