@@ -125,7 +125,7 @@ add_action('wgpt_render_tab_tools', function () {
     if (file_exists($tab_file)) {
         include $tab_file;
     } else {
-        echo '<div class="notice notice-error"><p>тЪая╕П tools.php: Tab UI file not found at <code>' . esc_html($tab_file) . '</code></p></div>';
+        echo '<div class="notice notice-error"><p>Error in tools.php: Tab UI file not found at <code>' . esc_html($tab_file) . '</code></p></div>';
     }
 });
 
