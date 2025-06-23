@@ -46,7 +46,7 @@ if (!function_exists('gpt_get_capability_map')) {
 
 $roles = wp_roles()->roles;
 $map   = gpt_get_capability_map();
-$selected_role = $_GET['wgpt_role'] ?? '';
+$selected_role = isset($_GET['wgpt_role']) ? sanitize_key($_GET['wgpt_role']) : '';
 
 ?>
 <div class="wrap">
