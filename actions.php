@@ -53,3 +53,62 @@ function wgpt_action_ping(array $payload = []): array {
     ];
 }
 // --- END --- GPT ACTION: PING -----------------------------------
+
+// ----------------------------------------------------------------
+// --- START --- GPT ACTION: CREATE_POST ---------------------------
+// ----------------------------------------------------------------
+
+/**
+ * Handles the `create_post` action dispatched through the universal /action endpoint.
+ * This mirrors the logic of the dedicated wgpt_create_post_handler but works with
+ * the already authenticated GPT user context.
+ *
+ * @param mixed   $null    Placeholder from the filter.
+ * @param string  $action  Action name being processed.
+ * @param array   $payload Parameters supplied for post creation.
+ * @param WP_User $user    GPT user object resolved from identity.
+ *
+ * @return array|null Array with post details on success or error information on failure.
+ */
+function wgpt_handle_create_post($null, $action, array $payload, WP_User $user) {
+    if ($action !== 'create_post') {
+        return $null;
+    }
+
+    $title   = sanitize_text_field($payload['title'] ?? '');
+    $content = isset($payload['content']) ? wp_kses_post($payload['content']) : '';
+    $status  = sanitize_text_field($payload['status'] ?? 'publish');
+
+    if ($title === '' || $content === '') {
+        return [
+            'error'   => 'invalid_params',
+            'message' => 'Title and content are required.',
+        ];
+    }
+
+    $post_id = wp_insert_post([
+        'post_title'   => $title,
+        'post_content' => $content,
+        'post_status'  => $status,
+        'post_author'  => $user->ID,
+    ], true);
+
+    if (is_wp_error($post_id)) {
+        return [
+            'error'   => 'post_creation_failed',
+            'message' => $post_id->get_error_message(),
+        ];
+    }
+
+    return [
+        'id'      => $post_id,
+        'title'   => $title,
+        'content' => $content,
+        'status'  => $status,
+        'author'  => $user->ID,
+        'link'    => get_permalink($post_id),
+    ];
+}
+add_filter('wgpt_handle_action', 'wgpt_handle_create_post', 10, 4);
+
+// --- END --- GPT ACTION: CREATE_POST -----------------------------
