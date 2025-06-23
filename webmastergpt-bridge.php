@@ -57,8 +57,6 @@ require_once plugin_dir_path(__FILE__) . 'helpers.php';
 // Provides public OpenAI schema endpoint
 require_once plugin_dir_path(__FILE__) . 'schema-endpoint.php';
 
-require_once plugin_dir_path(__FILE__) . 'permissions.php';
-
 require_once __DIR__ . '/roles-bootstrap.php';
 
 // --- END --- REQUIRED MODULES: UNIVERSAL LOADER ----------------
