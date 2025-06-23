@@ -27,13 +27,19 @@
 
 add_action('rest_api_init', function () {
     register_rest_route('wgpt/v1', '/schema', [
-        'methods'  => 'GET',
+        'methods' => 'GET',
         'callback' => 'wgpt_openapi_schema_handler',
         'permission_callback' => '__return_true', // Publicly readable!
     ]);
 });
 
-function wgpt_openapi_schema_handler() {
+/**
+ * Returns the OpenAPI schema for the WebmasterGPT Bridge.
+ *
+ * @return array
+ */
+function wgpt_openapi_schema_handler()
+{
     $site_url = get_site_url();
 
     return [
@@ -44,7 +50,7 @@ function wgpt_openapi_schema_handler() {
             "description" => "OpenAPI schema for GPT function-calling on this WordPress site."
         ],
         "servers" => [
-            [ "url" => $site_url . "/wp-json/wgpt/v1" ]
+            ["url" => $site_url . "/wp-json/wgpt/v1"]
         ],
         "components" => [
             "schemas" => [
@@ -113,9 +119,9 @@ function wgpt_openapi_schema_handler() {
                                 ]
                             ]
                         ],
-                        "401" => [ "description" => "Unauthorized" ],
-                        "403" => [ "description" => "Forbidden" ],
-                        "500" => [ "description" => "Internal server error" ]
+                        "401" => ["description" => "Unauthorized"],
+                        "403" => ["description" => "Forbidden"],
+                        "500" => ["description" => "Internal server error"]
                     ]
                 ]
             ]
@@ -132,21 +138,27 @@ function wgpt_openapi_schema_handler() {
 
 add_action('rest_api_init', function () {
     register_rest_route('wgpt/v1', '/create_post', [
-        'methods'  => 'POST',
+        'methods' => 'POST',
         'callback' => 'wgpt_create_post_handler',
         'permission_callback' => '__return_true',
     ]);
 });
 
-function wgpt_create_post_handler($request) {
-    $headers = function_exists('getallheaders') ? getallheaders() : [];
-    $headers = array_change_key_case($headers, CASE_LOWER);
-
-    if (!isset($headers['x-api-key'])) {
+/**
+ * Handles creation of a new post via the REST API.
+ *
+ * @param WP_REST_Request $request
+ * @return WP_REST_Response|WP_Error
+ */
+function wgpt_create_post_handler($request)
+{
+    // Use WordPress REST API header retrieval for reliability
+    $api_key = $request->get_header('x-api-key');
+    if (!$api_key) {
         return new WP_Error('rest_forbidden', 'Missing API key.', ['status' => 401]);
     }
+    $api_key = trim($api_key);
 
-    $api_key = trim($headers['x-api-key']);
     $map = [
         '0xteEF2YXTpNnnLOZP8SZDyo' => 'WebMaster.GPT',
     ];
@@ -171,11 +183,16 @@ function wgpt_create_post_handler($request) {
         return new WP_Error('rest_invalid_param', 'Title and content are required.', ['status' => 400]);
     }
 
+    // Validate status
+    if (!in_array($status, ['publish', 'draft'])) {
+        return new WP_Error('rest_invalid_param', 'Invalid status value.', ['status' => 400]);
+    }
+
     $post_id = wp_insert_post([
-        'post_title'   => $title,
+        'post_title' => $title,
         'post_content' => $content,
-        'post_status'  => $status,
-        'post_author'  => $user->ID,
+        'post_status' => $status,
+        'post_author' => $user->ID,
     ]);
 
     if (is_wp_error($post_id)) {
@@ -184,14 +201,15 @@ function wgpt_create_post_handler($request) {
 
     $post_url = get_permalink($post_id);
 
-    return [
-        'id'      => $post_id,
-        'title'   => $title,
+    // Use rest_ensure_response for consistency
+    return rest_ensure_response([
+        'id' => $post_id,
+        'title' => $title,
         'content' => $content,
-        'status'  => $status,
-        'author'  => $user->ID,
-        'link'    => $post_url,
-    ];
+        'status' => $status,
+        'author' => $user->ID,
+        'link' => $post_url,
+    ]);
 }
 
 // --- END --- CREATE POST ENDPOINT ------------------------------
