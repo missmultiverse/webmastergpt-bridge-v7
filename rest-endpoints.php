@@ -191,12 +191,31 @@ function wgpt_handle_gpt_action(WP_REST_Request $request) {
 
     $user = function_exists('wgpt_get_gpt_user_identity') ? wgpt_get_gpt_user_identity() : false;
 
+    // PATCH: Log and set current user before capability check
+    if ($user) {
+        wp_set_current_user($user->ID);
+        error_log('[WebmasterGPT] API action as user: ' . $user->user_login . ' | ID: ' . $user->ID);
+        error_log('[WebmasterGPT] User caps: ' . json_encode($user->allcaps));
+        error_log('[WebmasterGPT] After wp_set_current_user, current user: ' . wp_get_current_user()->user_login);
+    }
+
     if (!$user) {
         return new WP_Error('unauthenticated', 'Unable to resolve GPT identity.', ['status' => 401]);
     }
 
+    // ✅ Map action names to WP capabilities
+    $action_cap_map = [
+        'edit_post'    => 'edit_posts',
+        'delete_post'  => 'delete_posts',
+        'get_post'     => 'edit_posts',
+        'list_posts'   => 'edit_posts', // <-- key fix!
+        'upload_media' => 'upload_files',
+        'set_post_status' => 'edit_posts'
+    ];
+    $required_cap = $action_cap_map[$action] ?? $action;
+
     // ✅ Check capability enforcement
-    if (!user_can($user, $action)) {
+    if (!user_can($user, $required_cap)) {
         if (function_exists('wgpt_log')) {
             wgpt_log('REST', "❌ User '{$user->user_login}' attempted unauthorized action '{$action}'");
         }
@@ -225,6 +244,8 @@ function wgpt_handle_gpt_action(WP_REST_Request $request) {
 }
 
 // --- END --- GPT ACTION ROUTER ----------------------------------
+
+
 
 
 

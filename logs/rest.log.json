@@ -16,3 +16,609 @@
     "message": "\u26a0\ufe0f Unknown action 'gpt_create_post' invoked by 'WebMaster.GPT'",
     "data": null
 },
+{
+    "timestamp": "2025-06-24 01:24:24",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'ping'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 01:24:25",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'ping'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 01:31:40",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'list_posts'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 01:31:41",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'list_posts'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 01:32:37",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'list_posts'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 01:32:37",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'list_posts'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 01:45:24",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'set_post_status'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 01:45:25",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'set_post_status'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 01:58:37",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'list_posts'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 01:58:37",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'list_posts'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 02:05:56",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'get_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 02:05:57",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'get_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 02:07:22",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'list_posts'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 02:07:23",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'list_posts'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 07:58:22",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'get_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 07:58:23",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'get_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 08:39:38",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'list_posts'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 08:39:38",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'list_posts'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 08:40:06",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'edit_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 08:40:07",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'edit_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 08:42:12",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'get_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 08:42:12",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'get_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:10:06",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:27:27",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:28:59",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'create_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:29:00",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'create_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:30:11",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:31:04",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'create_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:31:05",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'create_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:32:41",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'create_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:32:42",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'create_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:34:18",
+    "channel": "REST",
+    "message": "\u2705 Action 'edit_post' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:36:22",
+    "channel": "REST",
+    "message": "\u2705 Action 'set_post_status' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:37:41",
+    "channel": "REST",
+    "message": "\u2705 Action 'get_post' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:38:20",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'list_universal_actions'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:38:20",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'list_universal_actions'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:53:33",
+    "channel": "REST",
+    "message": "\u2705 Action 'edit_post' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 09:55:22",
+    "channel": "REST",
+    "message": "\u2705 Action 'edit_post' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 10:00:13",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'list_universal_actions'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 10:01:10",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 10:01:30",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 10:02:14",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'list_universal_actions'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 12:04:33",
+    "channel": "REST",
+    "message": "\u2705 Action 'get_post' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 12:29:44",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 12:58:00",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_list_posts'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 12:58:00",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_list_posts'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 12:58:37",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 14:48:38",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 15:49:35",
+    "channel": "REST",
+    "message": "\u26a0\ufe0f Unknown action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 15:54:51",
+    "channel": "REST",
+    "message": "\u26a0\ufe0f Unknown action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 16:01:57",
+    "channel": "REST",
+    "message": "\u26a0\ufe0f Unknown action 'get_post' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 16:02:20",
+    "channel": "REST",
+    "message": "\u26a0\ufe0f Unknown action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 16:06:05",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 16:39:43",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_manage_dashboard'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 16:39:43",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_manage_dashboard'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 17:11:47",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 19:18:18",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 19:18:47",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 19:19:27",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 19:21:00",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 20:28:06",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 20:36:13",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 20:40:48",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 20:55:22",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_manage_dashboard'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 20:55:22",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_manage_dashboard'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 20:55:59",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 20:56:51",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 20:57:39",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:12:59",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_list_universal_actions'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:12:59",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_list_universal_actions'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:13:21",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_read_logs'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:13:22",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_read_logs'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:13:43",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_edit_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:13:43",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_edit_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:13:59",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_list_universal_actions'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:13:59",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_list_universal_actions'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:14:33",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_list_universal_actions'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:14:33",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_list_universal_actions'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:14:46",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_manage_dashboard'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:14:47",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_manage_dashboard'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:15:29",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_list_universal_actions'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:15:30",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_list_universal_actions'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:22:51",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_manage_dashboard'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:22:51",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_manage_dashboard'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:23:20",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:31:29",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:36:57",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'create_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:36:57",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'create_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:37:25",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'publish_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:37:26",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'publish_post'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:51:26",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:51:54",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:52:58",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_list_universal_actions'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:52:59",
+    "channel": "REST",
+    "message": "\u274c User 'WebMaster.GPT' attempted unauthorized action 'gpt_list_universal_actions'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:54:07",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:56:15",
+    "channel": "REST",
+    "message": "\u2705 Action 'gpt_create_post' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:57:28",
+    "channel": "REST",
+    "message": "\u2705 Action 'gpt_create_post' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:58:00",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 21:58:03",
+    "channel": "REST",
+    "message": "\u2705 Action 'gpt_create_post' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 22:00:18",
+    "channel": "REST",
+    "message": "\u2705 Action 'list_posts' invoked by 'WebMaster.GPT'",
+    "data": null
+},
+{
+    "timestamp": "2025-06-24 22:00:51",
+    "channel": "REST",
+    "message": "\u2705 Action 'gpt_create_post' invoked by 'WebMaster.GPT'",
+    "data": null
+},

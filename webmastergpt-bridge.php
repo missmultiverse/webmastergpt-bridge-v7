@@ -6,7 +6,8 @@
  * Author: MissMultiverse.AI
  * Author URI: https://missmultiverse.com
  * Text Domain: webmastergpt
- *
+ */
+
 /**
  * 🛠️ Developer Note:
  * This file is part of the WebmasterGPT Bridge plugin and MUST adhere to the following
@@ -59,6 +60,7 @@ require_once plugin_dir_path(__FILE__) . 'schema-endpoint.php';
 
 require_once __DIR__ . '/roles-bootstrap.php';
 
+require_once plugin_dir_path(__FILE__) . 'tools.php';
 // --- END --- REQUIRED MODULES: UNIVERSAL LOADER ----------------
 
 
@@ -79,15 +81,23 @@ if (!defined('ABSPATH')) {
 
 
 // ----------------------------------------------------------------
-// --- START --- LOAD CORE MODULES --------------------------------
+// --- START --- LOAD CORE MODULES -------------------------------- 
 // ----------------------------------------------------------------
 
-require_once __DIR__ . '/identity.php';         // Identity management: user + role
-require_once __DIR__ . '/permissions.php';      // Capability map + wrappers
+require_once __DIR__ . '/define-user-identity-resolver-API-key-auth.php';  // Identity management: Resolves the current GPT agent to a WP_User object using API key or logged-in fallback
+
+require_once plugin_dir_path(__FILE__) . '/define-assign-map-check-capability-to-roles.php'; // Define and assign custom capabilities to roles, and handle capability checks. 
+
+require_once __DIR__ . '/editor-publisher-dispatch-handler.php';
+
 require_once __DIR__ . '/rest-endpoints.php';   // GPT REST API handler
+
 require_once __DIR__ . '/admin-ui.php';         // Admin panel and navigation
-require_once __DIR__ . '/tools.php';            // Admin tools: identity/capability sync
+
+
+
 require_once __DIR__ . '/agents.php';           // GPT agent definitions + filters
+
 require_once __DIR__ . '/logging.php';          // Logging: denials + identity audit
 
 // --- END --- LOAD CORE MODULES ----------------------------------
@@ -109,9 +119,12 @@ if (is_dir($module_dir)) {
 // --- START --- PLUGIN ACTIVATION HOOK ---------------------------
 // ----------------------------------------------------------------
 register_activation_hook(__FILE__, function () {
-    if (function_exists('wgpt_sync_identity')) {
-        wgpt_sync_identity(); // Ensure GPT user + capabilities are created
+    if (function_exists('gpt_assign_capabilities')) {
+        gpt_assign_capabilities(); // Ensure GPT user + capabilities are created
     }
 });
 // --- END --- PLUGIN ACTIVATION HOOK -----------------------------
+
+
+
 

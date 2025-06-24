@@ -1,0 +1,71 @@
+Known Issues Report & Solution Summary:
+Issue 1: Insufficient Permissions for WebMaster.GPT User
+Symptoms: Actions like create_post, list_universal_actions, and edit_post were returning a 403 Forbidden error.
+
+Cause: The WebMaster.GPT user did not have sufficient permissions for these actions. The user lacked the necessary capabilities for tasks such as post creation, listing actions, and editing posts.
+
+Solution to Fix Permissions:
+Mapping Capabilities:
+The first step in resolving this issue was to correctly map the capabilities for actions like edit_post, create_post, and list_posts in the action handler.
+
+Here's the mapping section to add in the handlers-editor-publisher.php file:
+
+php
+Copy
+Edit
+// Add actions and permissions for WebMaster.GPT (Editor/Publisher)
+$action_cap_map = [
+    'edit_post' => 'edit_posts',
+    'delete_post' => 'delete_posts',
+    'create_post' => 'create_posts',
+    'list_posts' => 'list_posts',
+    'upload_media' => 'upload_files',
+    'edit_media' => 'edit_files',
+    'delete_media' => 'delete_files',
+    'edit_post_featured_image' => 'edit_posts', // Special capability for editing the featured image
+];
+This ensures that WebMaster.GPT is granted the appropriate permissions to create, edit, and delete posts, as well as to upload and edit media files.
+
+Confirm User Role/Permissions:
+In addition to the code changes, WebMaster.GPT needed to be granted the required capabilities within WordPress User Role Editor or a similar plugin. Specifically, ensure the following capabilities are enabled:
+
+create_posts
+
+edit_posts
+
+delete_posts
+
+upload_files
+
+edit_files
+
+Issue 2: Forbidden Actions (list_universal_actions)
+Symptoms: The 403 Forbidden error was returned for list_universal_actions indicating that WebMaster.GPT lacked permission to list available actions.
+
+Solution to Fix Action Listing:
+Permissions Mapping: Add a capability like list_universal_actions to the capabilities map.
+If additional capabilities are required, they can be added to the handlers-editor-publisher.php file to properly manage roles for higher-level actions:
+
+php
+Copy
+Edit
+$action_cap_map['list_universal_actions'] = 'manage_options';
+Admin-Level Permissions:
+
+Ensure WebMaster.GPT has admin-level permissions, or equivalent, for tasks that require listing and managing actions (e.g., managing options).
+
+Testing & Validation:
+After adjusting the capabilities and ensuring proper permissions:
+
+Test the functionality again using curl or API calls to ensure that actions like create_post, list_posts, and upload_media work as expected.
+
+Check the logs to confirm successful execution of these actions.
+
+Next Steps for Future References:
+User Role and Permissions: Always verify that the user (e.g., WebMaster.GPT) has the appropriate WordPress role and capabilities, especially when encountering 403 errors.
+
+Correct Capability Mapping: Ensure that all required actions are properly mapped in the action_cap_map section to avoid restricted access.
+
+Admin Permissions for Elevated Actions: For actions such as list_universal_actions and any high-level administrative tasks, make sure the user has access to manage_options or similar admin permissions.
+
+This solution should resolve permission-related issues for the WebMaster.GPT user while handling the most commonly used actions effectively.

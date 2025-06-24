@@ -1,6 +1,7 @@
 <?php
 /**
- * File: permissions.php
+ * File: define-assign-map-check-capability-to-roles.php
+ * Formally named: PERMISSIONS.php
  * Purpose: Centralized capability map + enforcement for GPT users.
  *
  * 🛡️ Enforces scoped access for GPT system users
@@ -39,7 +40,7 @@
  * 🚨 DO NOT REMOVE THIS DEVELOPER NOTE FROM ANY FILE.
  * It serves as a shared convention contract across the entire GPT plugin codebase.
  */
- 
+
 // ----------------------------------------------------------------
 // --- START --- GPT CAPABILITY MAP -------------------------------
 // ----------------------------------------------------------------
@@ -51,18 +52,78 @@
  * - Filter what agents can do
  * - Display readable names in admin UI
  */
-function gpt_get_capability_map(): array {
+function gpt_get_capability_map(): array
+{
     return [
         'gpt_manage_dashboard' => 'Access GPT dashboard',
-        'gpt_execute_action'   => 'Execute GPT REST actions',
-        'gpt_read_logs'        => 'View GPT system logs',
-        'gpt_sync_identity'    => 'Sync identities and roles',
-        'gpt_export_data'      => 'Export plugin-related data',
+        'gpt_execute_action' => 'Execute GPT REST actions',
+        'gpt_read_logs' => 'View GPT system logs',
+        'gpt_sync_identity' => 'Sync identities and roles',
+        'gpt_export_data' => 'Export plugin-related data',
+        'gpt_create_post' => 'Create new posts',
+        'gpt_publish' => 'Publish posts',
+        'gpt_upload_media' => 'Upload media',
+        'gpt_set_post_status' => 'Set post status (publish, draft)',
+        'gpt_edit_post' => 'Edit posts',
+        'gpt_delete_post' => 'Delete posts',
+        'gpt_list_posts' => 'List all posts',
+        'gpt_get_post' => 'Retrieve a specific post',
+        'gpt_list_universal_actions' => 'List available universal actions',
         // Add more custom GPT caps here as needed
     ];
 }
+
 // --- END --- GPT CAPABILITY MAP ---------------------------------
 
+
+// --- START --- ASSIGN CAPABILITIES TO ROLES --------------------
+function gpt_assign_capabilities()
+{
+    $roles = ['editor', 'publisher'];
+
+    foreach ($roles as $role_name) {
+        $role = get_role($role_name);
+
+        if ($role) {
+            // Assign capabilities to editor
+            if ($role_name == 'editor') {
+                $role->add_cap('gpt_manage_dashboard');
+                $role->add_cap('gpt_execute_action');
+                $role->add_cap('gpt_read_logs');
+                $role->add_cap('gpt_sync_identity');
+                $role->add_cap('gpt_export_data');
+                $role->add_cap('gpt_create_post');
+                $role->add_cap('gpt_publish');
+                $role->add_cap('gpt_upload_media');
+                $role->add_cap('gpt_set_post_status');
+                $role->add_cap('gpt_edit_post');
+                $role->add_cap('gpt_delete_post');
+                $role->add_cap('gpt_list_posts');
+                $role->add_cap('gpt_get_post');
+                $role->add_cap('gpt_list_universal_actions');
+            }
+
+            // Assign capabilities to publisher
+            if ($role_name == 'publisher') {
+                $role->add_cap('gpt_manage_dashboard');
+                $role->add_cap('gpt_execute_action');
+                $role->add_cap('gpt_read_logs');
+                $role->add_cap('gpt_sync_identity');
+                $role->add_cap('gpt_export_data');
+                $role->add_cap('gpt_create_post');
+                $role->add_cap('gpt_publish');
+                $role->add_cap('gpt_upload_media');
+                $role->add_cap('gpt_set_post_status');
+                $role->add_cap('gpt_edit_post');
+                $role->add_cap('gpt_delete_post');
+                $role->add_cap('gpt_list_posts');
+                $role->add_cap('gpt_get_post');
+                $role->add_cap('gpt_list_universal_actions');
+            }
+        }
+    }
+}
+// --- END --- ASSIGN CAPABILITIES TO ROLES ----------------------
 
 // ----------------------------------------------------------------
 // --- START --- HELPER: GPT USER CAN -----------------------------
@@ -71,7 +132,8 @@ function gpt_get_capability_map(): array {
 /**
  * Wrapper to check if current user or specific user can perform GPT actions.
  */
-function gpt_user_can(string $cap, $user_id = null): bool {
+function gpt_user_can(string $cap, $user_id = null): bool
+{
     $user = $user_id ? get_user_by('id', $user_id) : wp_get_current_user();
     if (!$user || !($user instanceof WP_User)) {
         return false;
@@ -89,7 +151,8 @@ function gpt_user_can(string $cap, $user_id = null): bool {
  * Checks whether a GPT agent has the specified capability.
  * Supports fallback to plugin-defined caps in legacy mode.
  */
-function gpt_agent_can($agent_id, $capability) {
+function gpt_agent_can($agent_id, $capability)
+{
     $user_id = intval($agent_id);
 
     if (!get_userdata($user_id)) {
