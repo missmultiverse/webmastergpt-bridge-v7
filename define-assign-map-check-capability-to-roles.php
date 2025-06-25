@@ -2,11 +2,11 @@
 /**
  * File: define-assign-map-check-capability-to-roles.php
  * Formally named: PERMISSIONS.php
- * Purpose: Centralized capability map + enforcement for GPT users.
+ * Purpose: Centralizes role creation, capability mapping, and checks for GPT users and their actions.
  *
- * 🛡️ Enforces scoped access for GPT system users
- * 🎯 Enables compatibility with role editors and audit logs
- * 🧩 Used by: REST checks, admin tools, and system audits
+ * 🛡️Manages WordPress role creation and assigns GPT-related capabilities to roles
+ * 🎯 Provides compatibility for GPT action checks and role-based permissions
+ * 🧩 Used for REST checks, admin tools, and system audits
  */
 
 
@@ -41,6 +41,7 @@
  * It serves as a shared convention contract across the entire GPT plugin codebase.
  */
 
+
 // ----------------------------------------------------------------
 // --- START --- GPT CAPABILITY MAP -------------------------------
 // ----------------------------------------------------------------
@@ -73,60 +74,93 @@ function gpt_get_capability_map(): array
         // Add more custom GPT caps here as needed
     ];
 }
-
 // --- END --- GPT CAPABILITY MAP ---------------------------------
 
 
-// --- START --- ASSIGN CAPABILITIES TO ROLES --------------------
+// ----------------------------------------------------------------
+// --- START --- ROLES AND CAPABILITIES ASSIGNMENT ----------------
+// ----------------------------------------------------------------
+
+/**
+ * Create custom roles if they don’t exist and assign GPT-related capabilities to them.
+ */
 function gpt_assign_capabilities()
 {
-    $roles = ['editor', 'publisher'];
-
-    foreach ($roles as $role_name) {
-        $role = get_role($role_name);
-
-        if ($role) {
-            // Assign capabilities to editor
-            if ($role_name == 'editor') {
-                $role->add_cap('gpt_manage_dashboard');
-                $role->add_cap('gpt_execute_action');
-                $role->add_cap('gpt_read_logs');
-                $role->add_cap('gpt_sync_identity');
-                $role->add_cap('gpt_export_data');
-                $role->add_cap('gpt_create_post');
-                $role->add_cap('gpt_publish');
-                $role->add_cap('gpt_upload_media');
-                $role->add_cap('gpt_set_post_status');
-                $role->add_cap('gpt_edit_post');
-                $role->add_cap('gpt_delete_post');
-                $role->add_cap('gpt_list_posts');
-                $role->add_cap('gpt_get_post');
-                $role->add_cap('gpt_list_universal_actions');
-                $role->add_cap('use_rest_endpoint');
-            }
-
-            // Assign capabilities to publisher
-            if ($role_name == 'publisher') {
-                $role->add_cap('gpt_manage_dashboard');
-                $role->add_cap('gpt_execute_action');
-                $role->add_cap('gpt_read_logs');
-                $role->add_cap('gpt_sync_identity');
-                $role->add_cap('gpt_export_data');
-                $role->add_cap('gpt_create_post');
-                $role->add_cap('gpt_publish');
-                $role->add_cap('gpt_upload_media');
-                $role->add_cap('gpt_set_post_status');
-                $role->add_cap('gpt_edit_post');
-                $role->add_cap('gpt_delete_post');
-                $role->add_cap('gpt_list_posts');
-                $role->add_cap('gpt_get_post');
-                $role->add_cap('gpt_list_universal_actions');
-                $role->add_cap('use_rest_endpoint');
-            }
-        }
+    // Create roles if they don't exist
+    if (!get_role('webmaster')) {
+        add_role(
+            'webmaster',
+            'Webmaster',
+            [
+                'read'                 => true,
+                'edit_posts'           => true,
+                'manage_options'       => true,
+                // Add more caps as needed...
+            ]
+        );
     }
+
+    if (!get_role('publisher')) {
+        add_role(
+            'publisher',
+            'Publisher',
+            [
+                'read'                 => true,
+                'edit_posts'           => true,
+                'edit_others_posts'    => true,
+                'publish_posts'        => true,
+                'delete_posts'         => true,
+                'manage_categories'    => true,
+                // Add more publisher caps...
+            ]
+        );
+    }
+
+    // Assign capabilities to `editor` role
+    $editor = get_role('editor');
+    if ($editor) {
+        $editor->add_cap('gpt_manage_dashboard');
+        $editor->add_cap('gpt_execute_action');
+        $editor->add_cap('gpt_read_logs');
+        $editor->add_cap('gpt_sync_identity');
+        $editor->add_cap('gpt_export_data');
+        $editor->add_cap('gpt_create_post');
+        $editor->add_cap('gpt_publish');
+        $editor->add_cap('gpt_upload_media');
+        $editor->add_cap('gpt_set_post_status');
+        $editor->add_cap('gpt_edit_post');
+        $editor->add_cap('gpt_delete_post');
+        $editor->add_cap('gpt_list_posts');
+        $editor->add_cap('gpt_get_post');
+        $editor->add_cap('gpt_list_universal_actions');
+        $editor->add_cap('use_rest_endpoint');
+    }
+
+    // Assign capabilities to `publisher` role
+    $publisher = get_role('publisher');
+    if ($publisher) {
+        $publisher->add_cap('gpt_manage_dashboard');
+        $publisher->add_cap('gpt_execute_action');
+        $publisher->add_cap('gpt_read_logs');
+        $publisher->add_cap('gpt_sync_identity');
+        $publisher->add_cap('gpt_export_data');
+        $publisher->add_cap('gpt_create_post');
+        $publisher->add_cap('gpt_publish');
+        $publisher->add_cap('gpt_upload_media');
+        $publisher->add_cap('gpt_set_post_status');
+        $publisher->add_cap('gpt_edit_post');
+        $publisher->add_cap('gpt_delete_post');
+        $publisher->add_cap('gpt_list_posts');
+        $publisher->add_cap('gpt_get_post');
+        $publisher->add_cap('gpt_list_universal_actions');
+        $publisher->add_cap('use_rest_endpoint');
+    }
+
+    // Log action for audit
+    error_log('✅ [WebmasterGPT] Roles/capabilities bootstrap executed.');
 }
-// --- END --- ASSIGN CAPABILITIES TO ROLES ----------------------
+// --- END --- ROLES AND CAPABILITIES ASSIGNMENT -------------------
+
 
 // ----------------------------------------------------------------
 // --- START --- HELPER: GPT USER CAN -----------------------------
@@ -152,7 +186,7 @@ function gpt_user_can(string $cap, $user_id = null): bool
 
 /**
  * Checks whether a GPT agent has the specified capability.
- * Supports fallback to plugin-defined caps in legacy mode.
+ * Supports fallback to plugin-defined caps in legacy mode..
  */
 function gpt_agent_can($agent_id, $capability)
 {
@@ -177,5 +211,14 @@ function gpt_agent_can($agent_id, $capability)
 }
 // --- END --- AGENT CAPABILITY CHECK -----------------------------
 
+// --- END --- FINAL CAPABILITY MAP AND ROLE ASSIGNMENT -----------------
 
 
+//Explanation of Changes:
+//Role Creation: I’ve merged the role creation part from roles-bootstrap.php into this file. Now, the webmaster and publisher roles are created if they don’t already exist.
+
+//Capabilities Assignment: The gpt_assign_capabilities() function assigns the relevant GPT capabilities to the editor and publisher roles, which are now centralized in this file.
+
+//Capability Map: The gpt_get_capability_map() function provides a list of GPT-specific capabilities that can be mapped to roles, and we’ve ensured that the necessary capabilities are assigned to the roles.
+
+//Helper Functions: The helper functions (gpt_user_can() and gpt_agent_can()) are included to check if users or agents have the necessary permissions to perform certain GPT actions.

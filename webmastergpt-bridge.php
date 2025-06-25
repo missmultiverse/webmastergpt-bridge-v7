@@ -51,16 +51,17 @@
  
  // Core API Key to User impersonation module
 require_once plugin_dir_path(__FILE__) . 'api-key-impersonate.php';
- 
+
 // Common utility functions for the plugin
 require_once plugin_dir_path(__FILE__) . 'helpers.php';
 
 // Provides public OpenAI schema endpoint
 require_once plugin_dir_path(__FILE__) . 'schema-endpoint.php';
 
-require_once __DIR__ . '/roles-bootstrap.php';
+//require_once __DIR__ . '/roles-bootstrap.php'; // Uncomment if needed
 
 require_once plugin_dir_path(__FILE__) . 'tools.php';
+
 // --- END --- REQUIRED MODULES: UNIVERSAL LOADER ----------------
 
 
@@ -86,15 +87,13 @@ if (!defined('ABSPATH')) {
 
 require_once __DIR__ . '/define-user-identity-resolver-API-key-auth.php';  // Identity management: Resolves the current GPT agent to a WP_User object using API key or logged-in fallback
 
-require_once plugin_dir_path(__FILE__) . '/define-assign-map-check-capability-to-roles.php'; // Define and assign custom capabilities to roles, and handle capability checks. 
+require_once plugin_dir_path(__FILE__) . '/define-assign-map-check-capability-to-roles.php'; // Define and assign custom capabilities to roles, and handle capability checks.
 
 require_once __DIR__ . '/editor-publisher-dispatch-handler.php';
 
 require_once __DIR__ . '/rest-endpoints.php';   // GPT REST API handler
 
 require_once __DIR__ . '/admin-ui.php';         // Admin panel and navigation
-
-
 
 require_once __DIR__ . '/agents.php';           // GPT agent definitions + filters
 
@@ -121,6 +120,7 @@ if (is_dir($module_dir)) {
 register_activation_hook(__FILE__, function () {
     if (function_exists('gpt_assign_capabilities')) {
         gpt_assign_capabilities(); // Ensure GPT user + capabilities are created
+        error_log('✅ [WebmasterGPT] Plugin activated and roles/capabilities assigned.');
     }
 });
 // --- END --- PLUGIN ACTIVATION HOOK -----------------------------

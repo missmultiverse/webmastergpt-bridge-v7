@@ -13,13 +13,12 @@
  *         │ --- START --- {SECTION NAME IN CAPS}                         │
  *         └──────────────────────────────────────────────────────────────┘
  *   — Every section must end with a **1-line compact footer** formatted as:
- *         // --- END --- {SECTION NAME IN CAPS} ---------------------------
+ *         // --- END --- {SECTION NAME IN CAPS} --------------------------
  *
  * 🚨 DO NOT REMOVE THIS DEVELOPER NOTE FROM ANY FILE.
  */
 
-//To use it paste this at the cutomGPT: https://missosology.com/wp-json/wgpt/v1/schema and use: x-api-key: 0xteEF2YXTpNnnLOZP8SZDyo
-
+//To use it paste this at the customGPT: https://missosology.com/wp-json/wgpt/v1/schema and use: x-api-key: 0xteEF2YXTpNnnLOZP8SZDyo
 
 add_action('rest_api_init', function () {
     register_rest_route('wgpt/v1', '/schema', [
@@ -41,21 +40,32 @@ function wgpt_openapi_schema_handler()
     return [
         "openapi" => "3.1.0",
         "info" => [
-            "title" => "WebMasterGPT Bridge5",
+            "title" => "WebMasterGPT Bridgehh",
             "version" => "1.1.0",
             "description" => "OpenAPI schema for GPT function-calling on this WordPress site (Editor & Publisher actions supported)."
         ],
         "servers" => [
-            ["url" => $site_url . "/wp-json/wgpt/v1"]
+            [
+                "url" => "$site_url/wp-json/wgpt/v1" // Dynamically adding site URL
+            ]
         ],
         "components" => [
             "schemas" => [
                 "edit_post_input" => [
                     "type" => "object",
                     "properties" => [
-                        "post_id" => ["type" => "integer", "description" => "ID of the post to edit"],
-                        "title" => ["type" => "string", "description" => "New post title (optional)"],
-                        "content" => ["type" => "string", "description" => "New post content (optional)"],
+                        "post_id" => [
+                            "type" => "integer",
+                            "description" => "ID of the post to edit"
+                        ],
+                        "title" => [
+                            "type" => "string",
+                            "description" => "New post title (optional)"
+                        ],
+                        "content" => [
+                            "type" => "string",
+                            "description" => "New post content (optional)"
+                        ],
                         "status" => [
                             "type" => "string",
                             "description" => "New post status (optional)",
@@ -67,40 +77,77 @@ function wgpt_openapi_schema_handler()
                 "delete_post_input" => [
                     "type" => "object",
                     "properties" => [
-                        "post_id" => ["type" => "integer", "description" => "ID of the post to delete"]
+                        "post_id" => [
+                            "type" => "integer",
+                            "description" => "ID of the post to delete"
+                        ]
                     ],
                     "required" => ["post_id"]
                 ],
                 "get_post_input" => [
                     "type" => "object",
                     "properties" => [
-                        "post_id" => ["type" => "integer", "description" => "ID of the post to retrieve"]
+                        "post_id" => [
+                            "type" => "integer",
+                            "description" => "ID of the post to retrieve"
+                        ]
                     ],
                     "required" => ["post_id"]
                 ],
                 "list_posts_input" => [
                     "type" => "object",
                     "properties" => [
-                        "post_type" => ["type" => "string", "description" => "Post type to query", "default" => "post"],
-                        "category" => ["type" => "integer", "description" => "Category ID (optional)"],
-                        "author" => ["type" => "integer", "description" => "Author user ID (optional)"],
-                        "status" => ["type" => "string", "description" => "Post status", "default" => "publish"],
-                        "limit" => ["type" => "integer", "description" => "Max results (default 10, max 50)", "default" => 10],
-                        "offset" => ["type" => "integer", "description" => "Pagination offset", "default" => 0]
+                        "post_type" => [
+                            "type" => "string",
+                            "description" => "Post type to query",
+                            "default" => "post"
+                        ],
+                        "category" => [
+                            "type" => "integer",
+                            "description" => "Category ID (optional)"
+                        ],
+                        "author" => [
+                            "type" => "integer",
+                            "description" => "Author user ID (optional)"
+                        ],
+                        "status" => [
+                            "type" => "string",
+                            "description" => "Post status",
+                            "default" => "publish"
+                        ],
+                        "limit" => [
+                            "type" => "integer",
+                            "description" => "Max results (default 10, max 50)",
+                            "default" => 10
+                        ],
+                        "offset" => [
+                            "type" => "integer",
+                            "description" => "Pagination offset",
+                            "default" => 0
+                        ]
                     ]
                 ],
                 "upload_media_input" => [
                     "type" => "object",
                     "properties" => [
-                        "file_url" => ["type" => "string", "description" => "URL of the media file to upload"],
-                        "file_name" => ["type" => "string", "description" => "Desired filename (with extension)"]
+                        "file_url" => [
+                            "type" => "string",
+                            "description" => "URL of the media file to upload"
+                        ],
+                        "file_name" => [
+                            "type" => "string",
+                            "description" => "Desired filename (with extension)"
+                        ]
                     ],
                     "required" => ["file_url", "file_name"]
                 ],
                 "set_post_status_input" => [
                     "type" => "object",
                     "properties" => [
-                        "post_id" => ["type" => "integer", "description" => "ID of the post to update"],
+                        "post_id" => [
+                            "type" => "integer",
+                            "description" => "ID of the post to update"
+                        ],
                         "status" => [
                             "type" => "string",
                             "description" => "New post status",
@@ -112,8 +159,14 @@ function wgpt_openapi_schema_handler()
                 "gpt_create_post_input" => [
                     "type" => "object",
                     "properties" => [
-                        "post_title" => ["type" => "string", "description" => "Title of the new post"],
-                        "post_content" => ["type" => "string", "description" => "Content of the new post"],
+                        "post_title" => [
+                            "type" => "string",
+                            "description" => "Title of the new post"
+                        ],
+                        "post_content" => [
+                            "type" => "string",
+                            "description" => "Content of the new post"
+                        ],
                         "post_status" => [
                             "type" => "string",
                             "description" => "Status of the new post",
@@ -125,7 +178,10 @@ function wgpt_openapi_schema_handler()
                 "gpt_publish_input" => [
                     "type" => "object",
                     "properties" => [
-                        "post_id" => ["type" => "integer", "description" => "ID of the post to publish"]
+                        "post_id" => [
+                            "type" => "integer",
+                            "description" => "ID of the post to publish"
+                        ]
                     ],
                     "required" => ["post_id"]
                 ],
@@ -209,8 +265,14 @@ function wgpt_openapi_schema_handler()
                 "generic_action_response" => [
                     "type" => "object",
                     "properties" => [
-                        "success" => ["type" => "boolean", "description" => "True if action succeeded"],
-                        "post_id" => ["type" => "integer", "description" => "Affected post ID (if relevant)"],
+                        "success" => [
+                            "type" => "boolean",
+                            "description" => "True if action succeeded"
+                        ],
+                        "post_id" => [
+                            "type" => "integer",
+                            "description" => "Affected post ID (if relevant)"
+                        ],
                         "post" => [
                             "type" => "object",
                             "description" => "Full post object (get_post)",
@@ -238,8 +300,14 @@ function wgpt_openapi_schema_handler()
                             ],
                             "description" => "List of posts (list_posts)"
                         ],
-                        "attachment_id" => ["type" => "integer", "description" => "ID of uploaded media"],
-                        "url" => ["type" => "string", "description" => "URL to the new resource"],
+                        "attachment_id" => [
+                            "type" => "integer",
+                            "description" => "ID of uploaded media"
+                        ],
+                        "url" => [
+                            "type" => "string",
+                            "description" => "URL to the new resource"
+                        ],
                         "error" => [
                             "type" => "object",
                             "description" => "Error details",
@@ -250,16 +318,15 @@ function wgpt_openapi_schema_handler()
                         ]
                     ]
                 ]
-            ],
-            "securitySchemes" => [
-                "ApiKeyAuth" => [
-                    "type" => "apiKey",
-                    "in" => "header",
-                    "name" => "x-api-key"
-                ]
             ]
         ],
-        "security" => [["ApiKeyAuth" => []]],
+        "securitySchemes" => [
+            "ApiKeyAuth" => [
+                "type" => "apiKey",
+                "in" => "header",
+                "name" => "x-api-key"
+            ]
+        ],
         "paths" => [
             "/action" => [
                 "post" => [
@@ -303,7 +370,6 @@ function wgpt_openapi_schema_handler()
                                                 ["$ref" => "#/components/schemas/set_post_status_input"],
                                                 ["$ref" => "#/components/schemas/gpt_create_post_input"],
                                                 ["$ref" => "#/components/schemas/gpt_publish_input"],
-                                                ["$ref" => "#/components/schemas/gpt_list_universal_actions_output"],
                                                 ["$ref" => "#/components/schemas/gpt_manage_dashboard_input"],
                                                 ["$ref" => "#/components/schemas/gpt_execute_action_input"],
                                                 ["$ref" => "#/components/schemas/gpt_read_logs_input"],
@@ -322,9 +388,7 @@ function wgpt_openapi_schema_handler()
                             "description" => "Action performed successfully",
                             "content" => [
                                 "application/json" => [
-                                    "schema" => [
-                                        "$ref" => "#/components/schemas/generic_action_response"
-                                    ]
+                                    "schema" => ["$ref" => "#/components/schemas/generic_action_response"]
                                 ]
                             ]
                         ],
@@ -340,6 +404,7 @@ function wgpt_openapi_schema_handler()
     ];
 }
 
-// --- END --- SCHEMA ENDPOINT -----------------------------------
 
+
+// --- END --- SCHEMA ENDPOINT -----------------------------------
 
