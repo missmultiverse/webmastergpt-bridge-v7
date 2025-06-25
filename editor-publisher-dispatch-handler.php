@@ -20,11 +20,12 @@
  * @param WP_User $user
  * @return array|WP_Error
  */
-function wgpt_handle_edit_post($payload, $user) {
+function wgpt_handle_edit_post($payload, $user)
+{
     $post_id = intval($payload['post_id'] ?? 0);
-    $title   = sanitize_text_field($payload['post_title'] ?? '');
+    $title = sanitize_text_field($payload['post_title'] ?? '');
     $content = wp_kses_post($payload['post_content'] ?? '');
-    $status  = sanitize_text_field($payload['status'] ?? 'publish');
+    $status = sanitize_text_field($payload['status'] ?? 'publish');
     $categories = $payload['categories'] ?? [];
     $tags = $payload['tags'] ?? '';
 
@@ -40,10 +41,10 @@ function wgpt_handle_edit_post($payload, $user) {
 
     // Prepare the post data for update
     $update = [
-        'ID'           => $post_id,
-        'post_title'   => $title,
+        'ID' => $post_id,
+        'post_title' => $title,
         'post_content' => $content,
-        'post_status'  => $status,
+        'post_status' => $status,
     ];
 
     // Update the post content and status
@@ -79,10 +80,10 @@ function wgpt_handle_edit_post($payload, $user) {
 
     // Return success response with post details
     return [
-        'success'  => true,
-        'post_id'  => $post_id,
+        'success' => true,
+        'post_id' => $post_id,
         'post_url' => get_permalink($post_id),
-        'status'   => $status,
+        'status' => $status,
         'categories' => $categories,
         'tags' => $tags,
     ];
@@ -100,7 +101,8 @@ function wgpt_handle_edit_post($payload, $user) {
  * @param WP_User $user
  * @return array|WP_Error
  */
-function wgpt_handle_delete_post($payload, $user) {
+function wgpt_handle_delete_post($payload, $user)
+{
     $post_id = intval($payload['post_id'] ?? 0);
     if (!$post_id || !get_post($post_id)) {
         return new WP_Error('invalid_post', 'Post not found.', ['status' => 404]);
@@ -109,7 +111,8 @@ function wgpt_handle_delete_post($payload, $user) {
         return new WP_Error('forbidden', 'Insufficient permissions.', ['status' => 403]);
     }
     $result = wp_trash_post($post_id);
-    if (!$result) return new WP_Error('delete_failed', 'Could not delete post.', ['status' => 500]);
+    if (!$result)
+        return new WP_Error('delete_failed', 'Could not delete post.', ['status' => 500]);
     return ['success' => true, 'post_id' => $post_id];
 }
 
@@ -120,10 +123,12 @@ function wgpt_handle_delete_post($payload, $user) {
  * @param WP_User $user
  * @return array|WP_Error
  */
-function wgpt_handle_get_post($payload, $user) {
+function wgpt_handle_get_post($payload, $user)
+{
     $post_id = intval($payload['post_id'] ?? 0);
     $post = get_post($post_id);
-    if (!$post) return new WP_Error('invalid_post', 'Post not found.', ['status' => 404]);
+    if (!$post)
+        return new WP_Error('invalid_post', 'Post not found.', ['status' => 404]);
     if (!user_can($user, 'edit_post', $post_id)) {
         return new WP_Error('forbidden', 'Insufficient permissions.', ['status' => 403]);
     }
@@ -137,7 +142,8 @@ function wgpt_handle_get_post($payload, $user) {
  * @param WP_User $user
  * @return array|WP_Error
  */
-function wgpt_handle_list_posts($payload, $user) {
+function wgpt_handle_list_posts($payload, $user)
+{
     $status = sanitize_text_field($payload['status'] ?? 'publish');
     $page = intval($payload['page'] ?? 1);
     $per_page = intval($payload['per_page'] ?? 10);
@@ -153,35 +159,81 @@ function wgpt_handle_list_posts($payload, $user) {
 }
 
 /**
- * Handle uploading media via URL
+ * Handle uploading media via URL and set as featured image or inline
  * 
- * @param array $payload [file_url, file_name]
+ * @param array $payload [file_url, file_name, post_id, media_type]
  * @param WP_User $user
  * @return array|WP_Error
  */
-function wgpt_handle_upload_media($payload, $user) {
+function wgpt_handle_upload_media($payload, $user)
+{
+    // Ensure necessary WordPress functions are available
+    if (!function_exists('download_url')) {
+        require_once ABSPATH . 'wp-admin/includes/file.php'; // Includes download_url
+    }
+    if (!function_exists('media_handle_sideload')) {
+        require_once ABSPATH . 'wp-admin/includes/media.php'; // Includes media_handle_sideload and wp_read_image_metadata
+    }
+    if (!function_exists('wp_read_image_metadata')) {
+        require_once ABSPATH . 'wp-admin/includes/image.php'; // Includes wp_read_image_metadata
+    }
+
+    // Check if the user has permission to upload files
     if (!user_can($user, 'upload_files')) {
         return new WP_Error('forbidden', 'Insufficient permissions.', ['status' => 403]);
     }
-    $file_url  = esc_url_raw($payload['file_url'] ?? '');
+
+    // Sanitize and validate the file URL and name
+    $file_url = esc_url_raw($payload['file_url'] ?? '');
     $file_name = sanitize_file_name($payload['file_name'] ?? '');
+
     if (!$file_url || !$file_name) {
         return new WP_Error('invalid_args', 'Missing file_url or file_name.', ['status' => 400]);
     }
-    $tmp = download_url($file_url);
-    if (is_wp_error($tmp)) return $tmp;
 
+    // Attempt to download the file
+    $tmp = download_url($file_url);
+
+    // If there was an error during the download, return the error
+    if (is_wp_error($tmp))
+        return $tmp;
+
+    // Prepare the file for sideload
     $file_array = [
-        'name'     => $file_name,
+        'name' => $file_name,
         'tmp_name' => $tmp,
     ];
-    $id = media_handle_sideload($file_array, 0);
-    @unlink($tmp);
-    if (is_wp_error($id)) return $id;
 
+    // Handle the file upload and create the attachment
+    $id = media_handle_sideload($file_array, 0);
+
+    // Clean up temporary file
+    @unlink($tmp);
+
+    // If there was an error creating the attachment, return the error
+    if (is_wp_error($id))
+        return $id;
+
+    // Get the URL of the uploaded file
     $url = wp_get_attachment_url($id);
+
+    // If the action is to set as a featured image, assign it to the specified post
+    if (isset($payload['post_id']) && isset($payload['media_type']) && $payload['media_type'] === 'featured') {
+        $post_id = intval($payload['post_id']);
+        if ($post_id) {
+            // Set the featured image for the post
+            set_post_thumbnail($post_id, $id);
+            error_log("Set the uploaded image as the featured image for post {$post_id}");
+        }
+    }
+
+    // Return success with the attachment ID and URL
     return ['attachment_id' => $id, 'url' => $url];
 }
+
+
+
+
 
 /**
  * Handle setting post status (publish, draft, etc.)
@@ -190,9 +242,10 @@ function wgpt_handle_upload_media($payload, $user) {
  * @param WP_User $user
  * @return array|WP_Error
  */
-function wgpt_handle_set_post_status($payload, $user) {
+function wgpt_handle_set_post_status($payload, $user)
+{
     $post_id = intval($payload['post_id'] ?? 0);
-    $status  = $payload['status'] ?? '';
+    $status = $payload['status'] ?? '';
     if (!$post_id || !get_post($post_id)) {
         return new WP_Error('invalid_post', 'Post not found.', ['status' => 404]);
     }
@@ -203,7 +256,8 @@ function wgpt_handle_set_post_status($payload, $user) {
         return new WP_Error('forbidden', 'Insufficient permissions.', ['status' => 403]);
     }
     $result = wp_update_post(['ID' => $post_id, 'post_status' => $status], true);
-    if (is_wp_error($result)) return $result;
+    if (is_wp_error($result))
+        return $result;
     return ['success' => true, 'post_id' => $post_id, 'status' => $status];
 }
 
@@ -214,7 +268,8 @@ function wgpt_handle_set_post_status($payload, $user) {
  * @param WP_User $user
  * @return array|WP_Error
  */
-function wgpt_handle_manage_dashboard($payload, $user) {
+function wgpt_handle_manage_dashboard($payload, $user)
+{
     if (!user_can($user, 'gpt_manage_dashboard')) {
         return new WP_Error('forbidden', 'Insufficient permissions.', ['status' => 403]);
     }
@@ -229,7 +284,8 @@ function wgpt_handle_manage_dashboard($payload, $user) {
  * @param WP_User $user
  * @return array|WP_Error
  */
-function wgpt_handle_execute_action($payload, $user) {
+function wgpt_handle_execute_action($payload, $user)
+{
     if (!user_can($user, 'gpt_execute_action')) {
         return new WP_Error('forbidden', 'Insufficient permissions.', ['status' => 403]);
     }
@@ -238,18 +294,28 @@ function wgpt_handle_execute_action($payload, $user) {
 }
 
 /**
- * Handle reading logs
+ * Handle reading logs from the rest.log.json file
  * 
  * @param array $payload
  * @param WP_User $user
  * @return array|WP_Error
  */
-function wgpt_handle_read_logs($payload, $user) {
+function wgpt_handle_read_logs($payload, $user)
+{
+    // Check user permissions
     if (!user_can($user, 'gpt_read_logs')) {
         return new WP_Error('forbidden', 'Insufficient permissions.', ['status' => 403]);
     }
-    // Log reading logic here
-    return ['success' => true];
+
+    // Get the logs from the specific log file (e.g., 'identity', 'denial', 'system')
+    $log_type = isset($payload['log_type']) ? sanitize_text_field($payload['log_type']) : 'identity'; // Default to 'identity' log type
+    $logs = wgpt_get_logs($log_type);
+
+    // Return the logs or an empty array if no logs found
+    return [
+        'success' => true,
+        'logs' => $logs
+    ];
 }
 
 /**
@@ -262,7 +328,8 @@ function wgpt_handle_read_logs($payload, $user) {
 // Check if the sync_identity function is already defined (i.e., from tools.php)
 if (!function_exists('wgpt_handle_sync_identity')) {
     // Define the function here or register it for actions
-    function wgpt_handle_sync_identity($payload, $user) {
+    function wgpt_handle_sync_identity($payload, $user)
+    {
         if (!user_can($user, 'gpt_sync_identity')) {
             return new WP_Error('forbidden', 'Insufficient permissions.', ['status' => 403]);
         }
@@ -281,7 +348,8 @@ add_action('sync_identity_action', 'wgpt_handle_sync_identity', 10, 2);
  * @param WP_User $user
  * @return array|WP_Error
  */
-function wgpt_handle_export_data($payload, $user) {
+function wgpt_handle_export_data($payload, $user)
+{
     if (!user_can($user, 'gpt_export_data')) {
         return new WP_Error('forbidden', 'Insufficient permissions.', ['status' => 403]);
     }
@@ -296,15 +364,16 @@ function wgpt_handle_export_data($payload, $user) {
  * @param WP_User $user
  * @return array|WP_Error
  */
-function wgpt_handle_create_post($payload, $user) {
+function wgpt_handle_create_post($payload, $user)
+{
     if (!user_can($user, 'gpt_create_post')) {
         return new WP_Error('forbidden', 'Insufficient permissions.', ['status' => 403]);
     }
 
     // Sanitize and prepare the data for the new post
-    $post_title   = sanitize_text_field($payload['post_title'] ?? '');
+    $post_title = sanitize_text_field($payload['post_title'] ?? '');
     $post_content = isset($payload['post_content']) ? wp_kses_post($payload['post_content']) : '';
-    $post_status  = sanitize_text_field($payload['post_status'] ?? 'publish');
+    $post_status = sanitize_text_field($payload['post_status'] ?? 'publish');
 
     // Validate required parameters
     if (empty($post_title) || empty($post_content)) {
@@ -313,11 +382,11 @@ function wgpt_handle_create_post($payload, $user) {
 
     // Prepare the data to insert into the database
     $post_data = [
-        'post_title'   => $post_title,
+        'post_title' => $post_title,
         'post_content' => $post_content,
-        'post_status'  => $post_status,
-        'post_author'  => $user->ID,
-        'post_type'    => 'post',  // Set post type (default to 'post')
+        'post_status' => $post_status,
+        'post_author' => $user->ID,
+        'post_type' => 'post',  // Set post type (default to 'post')
     ];
 
     // Insert the post into the database
@@ -330,9 +399,9 @@ function wgpt_handle_create_post($payload, $user) {
 
     // Successfully created the post, return relevant details
     return [
-        'success'   => true,
-        'post_id'   => $post_id,
-        'post_title'=> $post_title,
+        'success' => true,
+        'post_id' => $post_id,
+        'post_title' => $post_title,
         'post_link' => get_permalink($post_id), // Return the link to the newly created post
     ];
 }
@@ -344,7 +413,8 @@ function wgpt_handle_create_post($payload, $user) {
  * @param WP_User $user
  * @return array|WP_Error
  */
-function wgpt_handle_publish($payload, $user) {
+function wgpt_handle_publish($payload, $user)
+{
     if (!user_can($user, 'gpt_publish')) {
         return new WP_Error('forbidden', 'Insufficient permissions.', ['status' => 403]);
     }
@@ -359,7 +429,8 @@ function wgpt_handle_publish($payload, $user) {
  * @param WP_User $user
  * @return array|WP_Error
  */
-function wgpt_handle_list_universal_actions($payload, $user) {
+function wgpt_handle_list_universal_actions($payload, $user)
+{
     if (!user_can($user, 'gpt_list_universal_actions')) {
         return new WP_Error('forbidden', 'Insufficient permissions.', ['status' => 403]);
     }
@@ -369,7 +440,7 @@ function wgpt_handle_list_universal_actions($payload, $user) {
 
 // --- END --- ACTION DISPATCHER REGISTRATION ------------------
 
-add_filter('wgpt_handle_action', function($result, $action, $payload, $user) {
+add_filter('wgpt_handle_action', function ($result, $action, $payload, $user) {
     // Log the action being processed
     error_log("Processing action: {$action} for user: {$user->user_login} (ID: {$user->ID})");
 
@@ -377,7 +448,7 @@ add_filter('wgpt_handle_action', function($result, $action, $payload, $user) {
         case 'edit_post':
             // Log the payload to ensure the correct data is being passed
             error_log("Payload for edit_post: " . print_r($payload, true));
-            
+
             // Ensure edit post functionality with wp_update_post logic, including categories and tags
             // Handle categories by ensuring they are passed correctly
             if (isset($payload['categories'])) {
@@ -394,52 +465,67 @@ add_filter('wgpt_handle_action', function($result, $action, $payload, $user) {
 
             // Ensure the edit post functionality with wp_update_post and assign categories and tags
             return wgpt_handle_edit_post($payload, $user);
-        
+
+        case 'upload_media':
+            // Log the payload for upload_media action
+            error_log("Payload for upload_media: " . print_r($payload, true));
+
+            // Ensure we have the file_url and file_name in the payload
+            if (isset($payload['file_url'], $payload['file_name'])) {
+                // Proceed with media upload and handling the file as either inline or featured image
+                return wgpt_handle_upload_media($payload, $user);
+            } else {
+                return new WP_Error('missing_data', 'Missing file_url or file_name.', ['status' => 400]);
+            }
+
         case 'delete_post':
             error_log("Payload for delete_post: " . print_r($payload, true));
             return wgpt_handle_delete_post($payload, $user);
-        
+
         case 'get_post':
             return wgpt_handle_get_post($payload, $user);
-        
+
         case 'list_posts':
             return wgpt_handle_list_posts($payload, $user);
-        
+
         case 'upload_media':
+            // Additional logging for upload_media
+            error_log("Payload for upload_media: " . print_r($payload, true));
             return wgpt_handle_upload_media($payload, $user);
-        
+
         case 'set_post_status':
             return wgpt_handle_set_post_status($payload, $user);
-        
+
         case 'gpt_manage_dashboard':
             return wgpt_handle_manage_dashboard($payload, $user);
-        
+
         case 'gpt_execute_action':
             return wgpt_handle_execute_action($payload, $user);
-        
+
         case 'gpt_read_logs':
             return wgpt_handle_read_logs($payload, $user);
-        
+
         case 'gpt_sync_identity':
             return wgpt_handle_sync_identity($payload, $user);
-        
+
         case 'gpt_export_data':
             return wgpt_handle_export_data($payload, $user);
-        
+
         case 'gpt_create_post':
             // Ensure to handle post creation via the updated function
             return wgpt_handle_create_post($payload, $user);
-        
+
         case 'gpt_publish':
             return wgpt_handle_publish($payload, $user);
-        
+
         case 'gpt_list_universal_actions':
             return wgpt_handle_list_universal_actions($payload, $user);
-        
+
         default:
             return $result;
     }
 }, 10, 4);
 
-// --- END --- ACTION DISPATCHER REGISTRATION ------------------ 
+// --- END --- ACTION DISPATCHER REGISTRATION ------------------  
+
 
