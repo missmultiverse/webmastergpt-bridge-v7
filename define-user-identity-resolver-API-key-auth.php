@@ -33,9 +33,10 @@ if (!function_exists('wgpt_get_gpt_user_identity')) {
 
         if (isset($headers['x-api-key'])) {
             $api_key = trim($headers['x-api-key']);
-            $map = [
-                '0xteEF2YXTpNnnLOZP8SZDyo' => 2381, // <-- Use INT user ID!
-            ];
+            // Use a configurable option for API key map
+            $map = get_option('wgpt_api_key_map', [
+                '0xteEF2YXTpNnnLOZP8SZDyo' => 2381, // fallback default
+            ]);
 
             if (isset($map[$api_key])) {
                 $user_id = (int) $map[$api_key];

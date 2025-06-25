@@ -7,7 +7,7 @@
  */
 
 // Optional: Debug marker
-error_log('WGPT: Entered tab-access.php');
+// error_log('WGPT: Entered tab-access.php');
 echo '<!-- Access tab loaded -->';
 
 /**
@@ -21,22 +21,24 @@ echo '<!-- Access tab loaded -->';
 // ----------------------------------------------------------------
 // --- START --- SECURITY GUARD -----------------------------------
 // ----------------------------------------------------------------
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH'))
+  exit;
 // --- END --- SECURITY GUARD -------------------------------------
 
 // ----------------------------------------------------------------
 // --- START --- LEGACY FALLBACK: CAPABILITY MAP ------------------
 // ----------------------------------------------------------------
 if (!function_exists('gpt_get_capability_map')) {
-    function gpt_get_capability_map(): array {
-        return [
-            'gpt_manage_dashboard' => 'Access GPT dashboard',
-            'gpt_execute_action'   => 'Execute GPT REST actions',
-            'gpt_read_logs'        => 'View GPT system logs',
-            'gpt_sync_identity'    => 'Sync identities and roles',
-            'gpt_export_data'      => 'Export plugin-related data',
-        ];
-    }
+  function gpt_get_capability_map(): array
+  {
+    return [
+      'gpt_manage_dashboard' => 'Access GPT dashboard',
+      'gpt_execute_action' => 'Execute GPT REST actions',
+      'gpt_read_logs' => 'View GPT system logs',
+      'gpt_sync_identity' => 'Sync identities and roles',
+      'gpt_export_data' => 'Export plugin-related data',
+    ];
+  }
 }
 // --- END --- LEGACY FALLBACK: CAPABILITY MAP --------------------
 
@@ -45,7 +47,7 @@ if (!function_exists('gpt_get_capability_map')) {
 // ----------------------------------------------------------------
 
 $roles = wp_roles()->roles;
-$map   = gpt_get_capability_map();
+$map = gpt_get_capability_map();
 $selected_role = isset($_GET['wgpt_role']) ? sanitize_key($_GET['wgpt_role']) : '';
 
 ?>
@@ -94,20 +96,21 @@ $selected_role = isset($_GET['wgpt_role']) ? sanitize_key($_GET['wgpt_role']) : 
       <?php foreach ($map as $action => $cap):
         $granted_roles = [];
         foreach ($roles as $slug => $details) {
-          if ($selected_role && $selected_role !== $slug) continue;
+          if ($selected_role && $selected_role !== $slug)
+            continue;
           $role_obj = get_role($slug);
           if ($role_obj && $role_obj->has_cap($cap)) {
             $granted_roles[] = $details['name'];
           }
         }
         if (!$selected_role || !empty($granted_roles)):
-      ?>
-        <tr>
-          <td><code><?php echo esc_html($action); ?></code></td>
-          <td><code><?php echo esc_html($cap); ?></code></td>
-          <td><?php echo implode(', ', $granted_roles); ?></td>
-        </tr>
-      <?php endif; endforeach; ?>
+          ?>
+          <tr>
+            <td><code><?php echo esc_html($action); ?></code></td>
+            <td><code><?php echo esc_html($cap); ?></code></td>
+            <td><?php echo implode(', ', $granted_roles); ?></td>
+          </tr>
+        <?php endif; endforeach; ?>
     </tbody>
   </table>
 </div>

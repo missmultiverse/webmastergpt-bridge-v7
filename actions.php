@@ -43,13 +43,14 @@
 /**
  * Responds to a basic GPT ping for health/status check.
  */
-function wgpt_action_ping(array $payload = []): array {
+function wgpt_action_ping(array $payload = []): array
+{
     return [
-        'status'    => 'ok',
-        'site'      => get_bloginfo('url'),
-        'version'   => '7.0.0',
-        'message'   => 'WebmasterGPT v7 is alive and responding.',
-        'time'      => current_time('mysql'),
+        'status' => 'ok',
+        'site' => get_bloginfo('url'),
+        'version' => '7.0.0',
+        'message' => 'WebmasterGPT v7 is alive and responding.',
+        'time' => current_time('mysql'),
     ];
 }
 // --- END --- GPT ACTION: PING -----------------------------------
@@ -70,45 +71,66 @@ function wgpt_action_ping(array $payload = []): array {
  *
  * @return array|null Array with post details on success or error information on failure.
  */
-function wgpt_handle_create_post($null, $action, array $payload, WP_User $user) {
+function wgpt_handle_create_post($null, $action, array $payload, WP_User $user)
+{
     if ($action !== 'create_post') {
         return $null;
     }
 
-    $title   = sanitize_text_field($payload['title'] ?? '');
+    $title = sanitize_text_field($payload['title'] ?? '');
     $content = isset($payload['content']) ? wp_kses_post($payload['content']) : '';
-    $status  = sanitize_text_field($payload['status'] ?? 'publish');
+    $status = sanitize_text_field($payload['status'] ?? 'publish');
 
     if ($title === '' || $content === '') {
         return [
-            'error'   => 'invalid_params',
+            'error' => 'invalid_params',
             'message' => 'Title and content are required.',
         ];
     }
 
     $post_id = wp_insert_post([
-        'post_title'   => $title,
+        'post_title' => $title,
         'post_content' => $content,
-        'post_status'  => $status,
-        'post_author'  => $user->ID,
+        'post_status' => $status,
+        'post_author' => $user->ID,
     ], true);
 
     if (is_wp_error($post_id)) {
         return [
-            'error'   => 'post_creation_failed',
+            'error' => 'post_creation_failed',
             'message' => $post_id->get_error_message(),
         ];
     }
 
     return [
-        'id'      => $post_id,
-        'title'   => $title,
+        'id' => $post_id,
+        'title' => $title,
         'content' => $content,
-        'status'  => $status,
-        'author'  => $user->ID,
-        'link'    => get_permalink($post_id),
+        'status' => $status,
+        'author' => $user->ID,
+        'link' => get_permalink($post_id),
     ];
 }
 add_filter('wgpt_handle_action', 'wgpt_handle_create_post', 10, 4);
 
 // --- END --- GPT ACTION: CREATE_POST -----------------------------
+
+// ----------------------------------------------------------------
+// --- START --- GPT ACTION: SYNC_IDENTITY ------------------------
+// ----------------------------------------------------------------
+
+/**
+ * Handles GPT identity sync action. (Stub implementation)
+ *
+ * @param array $payload
+ * @return array
+ */
+function wgpt_sync_identity(array $payload = []): array
+{
+    // TODO: Implement actual identity sync logic
+    return [
+        'success' => true,
+        'message' => 'Identity sync is not yet implemented.'
+    ];
+}
+// --- END --- GPT ACTION: SYNC_IDENTITY --------------------------

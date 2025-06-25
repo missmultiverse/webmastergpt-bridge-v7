@@ -9,7 +9,7 @@
  *
  * 🚨 DO NOT REMOVE THIS HEADER OR SECTION COMMENTS!
  */
- 
+
 /**
  * 🛠️ Developer Note:
  * This file is part of the WebmasterGPT Bridge plugin and MUST adhere to the following
@@ -60,9 +60,10 @@ add_filter('rest_authentication_errors', function ($result) {
 
     if (isset($headers['x-api-key'])) {
         $api_key = trim($headers['x-api-key']);
-        $map = [
-            '0xteEF2YXTpNnnLOZP8SZDyo' => 'WebMaster.GPT', // API key maps to this user_login
-        ];
+        // Use a configurable option for API key map
+        $map = get_option('wgpt_api_key_map', [
+            '0xteEF2YXTpNnnLOZP8SZDyo' => 'WebMaster.GPT', // fallback default
+        ]);
         if (isset($map[$api_key])) {
             $user = get_user_by('login', $map[$api_key]);
             if ($user && $user->exists()) {

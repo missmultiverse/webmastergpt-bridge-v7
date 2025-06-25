@@ -69,6 +69,7 @@ function gpt_get_capability_map(): array
         'gpt_list_posts' => 'List all posts',
         'gpt_get_post' => 'Retrieve a specific post',
         'gpt_list_universal_actions' => 'List available universal actions',
+        'use_rest_endpoint' => 'Access REST endpoints',
         // Add more custom GPT caps here as needed
     ];
 }
@@ -101,6 +102,7 @@ function gpt_assign_capabilities()
                 $role->add_cap('gpt_list_posts');
                 $role->add_cap('gpt_get_post');
                 $role->add_cap('gpt_list_universal_actions');
+                $role->add_cap('use_rest_endpoint');
             }
 
             // Assign capabilities to publisher
@@ -119,6 +121,7 @@ function gpt_assign_capabilities()
                 $role->add_cap('gpt_list_posts');
                 $role->add_cap('gpt_get_post');
                 $role->add_cap('gpt_list_universal_actions');
+                $role->add_cap('use_rest_endpoint');
             }
         }
     }
