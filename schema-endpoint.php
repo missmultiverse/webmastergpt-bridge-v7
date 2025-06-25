@@ -23,7 +23,7 @@
 
 add_action('rest_api_init', function () {
     register_rest_route('wgpt/v1', '/schema', [
-        'methods'  => 'GET',
+        'methods' => 'GET',
         'callback' => 'wgpt_openapi_schema_handler',
         'permission_callback' => '__return_true', // Publicly readable!
     ]);
